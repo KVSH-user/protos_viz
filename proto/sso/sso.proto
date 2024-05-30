@@ -7,6 +7,10 @@ option go_package = "vizap.sso.v1;ssov1";
 service Auth {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc ValidateSession (ValidateRequest) returns (ValidateResponse);
+  rpc RefreshSession (RefreshRequest) returns (RefreshResponse);
+  rpc RequestPasswordReset (PasswordResetRequest) returns (PasswordResetResponse);
+  rpc PerformPasswordReset (PerformPasswordResetRequest) returns (PerformPasswordResetResponse);
 }
 
 message RegisterRequest {
@@ -18,13 +22,49 @@ message RegisterResponse {
   int64 user_id = 1;
 }
 
+message ValidateRequest {
+  string access_token = 1;
+}
+
+message RefreshRequest {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
 message LoginRequest {
   string phone = 1;
   string password = 2;
   int32 app_id = 3;
 }
 
+message PasswordResetRequest {
+  string email = 1;
+}
+
+message PerformPasswordResetRequest {
+  string token = 1; // Токен для сброса полученный пользователем по email
+  string newPassword = 2; // Новый пароль пользователя
+}
+
 message LoginResponse {
   string access_token = 1;
   string  refresh_token = 2;
+}
+
+message ValidateResponse {
+  bool is_valid = 1;
+  int64 uid =2;
+}
+
+message RefreshResponse {
+  string new_access_token = 1;
+  string new_refresh_token = 2;
+}
+
+message PasswordResetResponse {
+  string message = 1; // Сообщение об успехе или описание ошибки
+}
+
+message PerformPasswordResetResponse {
+  bool success = 1;
 }
